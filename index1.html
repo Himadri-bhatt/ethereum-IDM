@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<head>
+     <mate charset="UTF-8">
+     <title>用户登录</title>
+    <script src="jquery.js"></script>
+    <script src="web3.js"></script>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+
+<body>
+<div class="mydiv">
+  <div class="div1">
+     <p>登录页面</p>
+  </div>
+  <div class="div2">
+  <ul>
+   <a href="index.html">我是用户</a>
+   <a href="#">我是云服务提供者</a>
+  </ul>
+
+  </div>
+ <div class="div3">
+   请输入您的索引<input type="text" class="index" required></br>
+   请输入您的Keys<input type="text" class="keys"required></br>
+   请输入您的jwt<input type="text" class="enjwt"></br>
+   请输入您的信誉值<input type="text" class="myRpt"></br>
+   请输入您的哈希值<input type="text" class="myhash" required></br>
+   <button class="btn">确认</button>
+ </div>
+</div>
+<script type="text/javascript">
+if (typeof web3 !== 'undefined') {
+     web3 = new Web3(web3.currentProvider);
+ } else {
+     // set the provider you want from Web3.providers
+     web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+ }
+ web3.eth.defaultAccount = web3.eth.accounts[0];
+ var infoContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "kill",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "cspID",
+				"type": "uint256"
+			},
+			{
+				"name": "a",
+				"type": "bytes"
+			},
+			{
+				"name": "b",
+				"type": "bytes"
+			}
+		],
+		"name": "comparehashs",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "index",
+				"type": "uint256"
+			},
+			{
+				"name": "myRpt",
+				"type": "uint256"
+			},
+			{
+				"name": "keys",
+				"type": "bytes"
+			},
+			{
+				"name": "enJwt",
+				"type": "bytes"
+			},
+			{
+				"name": "myhash",
+				"type": "bytes"
+			}
+		],
+		"name": "newCsp",
+		"outputs": [
+			{
+				"name": "cspID",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "cspID",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "keys",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "enJwt",
+				"type": "bytes"
+			},
+			{
+				"indexed": false,
+				"name": "myhash",
+				"type": "bytes"
+			},
+			{
+				"indexed": false,
+				"name": "Rpt",
+				"type": "uint256"
+			}
+		],
+		"name": "eventInfo",
+		"type": "event"
+	}
+]);
+ var info = infoContract.at('0x8b15cf492921603a573c476f13ac6dae8c6967f9');
+ info.getInfo(function(error, result){
+     if(!error)
+         {
+             $("#info").html(result[0]+','+result[1]+','+result[2]+','+result[3]+','+result[4]);
+             console.log(result);
+         }
+     else
+         console.error(error);
+ });
+ $("#button").click(function() {
+     info.setInfo($("#index").val(), $("#keys").val(),$("#enjwt").val(),$("#myRpt").val(),$("#myhash").val());
+ });
+</script>
+</body>
+</html>
