@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<head>
+     <mate charset="UTF-8">
+     <title>用户登录</title>
+    <script src="jquery.js"></script>
+    <script src="web3.js"></script>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+
+<body>
+<div class="mydiv">
+  <div class="div1">
+     <p>登录页面</p>
+  </div>
+  <div class="div2">
+  <ul>
+   <a href="#">我是用户</a>
+   <a href="index1.html">我是云服务提供者</a>
+  </ul>
+
+  </div>
+ <div class="div3">
+   请输入您的姓名<input type="text" class="name"required></br>
+   请输入您的Id<input type="text" class="userID" required></br>
+   请输入您的jwt<input type="text" class="enjwt"required></br>
+   请输入您的初始签发时间<input type="text" class="iat"></br>
+   请输入您的到期时间<input type="text" class="exp"></br>
+   <button id="btn">确认</button>
+ </div>
+</div>
+<script type="text/javascript">
+if (typeof web3 !== 'undefined') {
+     web3 = new Web3(web3.currentProvider);
+ } else {
+     // set the provider you want from Web3.providers
+     web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+ }
+ web3.eth.defaultAccount = web3.eth.accounts[0];
+ var infoContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "a",
+				"type": "bytes"
+			},
+			{
+				"name": "b",
+				"type": "bytes"
+			}
+		],
+		"name": "compareASQ",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "kill",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "userID",
+				"type": "uint256"
+			}
+		],
+		"name": "UserRPT",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "iat",
+				"type": "uint256"
+			},
+			{
+				"name": "exp",
+				"type": "uint256"
+			},
+			{
+				"name": "index",
+				"type": "uint256"
+			},
+			{
+				"name": "ASQ",
+				"type": "bytes32"
+			},
+			{
+				"name": "myASQ",
+				"type": "bytes32"
+			}
+		],
+		"name": "newUser",
+		"outputs": [
+			{
+				"name": "userID",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "Rpt",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "userID",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "myASQ",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "Userinfo",
+		"type": "event"
+	}
+]);
+ var info = infoContract.at('0xa40c48346b96205c4a66d9348173575dae3939a1');
+ info.getInfo(function(error, result){
+     if(!error)
+         {
+             $("#info").html(result[0]+','+result[1]+','+result[2]+','+result[3]+','+result[4]+','+result[5]);
+             console.log(result);
+         }
+     else
+         console.error(error);
+ });
+ $("#button").click(function() {
+     info.setInfo($("#name").val(), $("#userID").val(),$("#enjwt").val(),$("#iat").val(),$("#exp").val());
+ });
+</script>
+</body>
+</html>
